@@ -13,7 +13,7 @@ module halfadder(
 endmodule
 
 //Dataflow HalfAdder
-module halfadder(
+module halfadder1(
     input a,
     input b,
     output s,
@@ -24,7 +24,7 @@ module halfadder(
 endmodule
 
 //Structural HalfAdder
-module halfadder(
+module halfadder2(
     input a,
     input b,
     output s,
