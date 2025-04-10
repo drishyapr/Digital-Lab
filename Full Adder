@@ -22,10 +22,69 @@ module fulladder(
     or o1(cout,c1,c2);
 endmodule
 
+
+
 //Structural
+module full_adder_structural(
+    input x,
+    input y,
+    input z,
+    output s,
+    output c
+);
+    wire s1, c1, c2;
+
+    half_adder_structural ha1(x, y, s1, c1);
+    half_adder_structural ha2(s1, z, s, c2);
+    or (c, c1, c2);
+endmodule
+
+
+
 
 //behavioural
+module full_adder(
+    input x,
+    input y,
+    input z,
+    output reg s,
+    output reg c
+);
+    always @(x or y or z) 
+    begin
+    {c, s} = x + y + z;
+    end
+endmodule
+
+module full_adder_dataflow(
+    input x,
+    input y,
+    input z,
+    output s,
+    output c
+);
+    assign s = x ^ y ^ z;
+    assign c = (x & y) | (y & z) | (z & x);
+endmodule
+
+
+
+
 //dataflow
+module full_adder_dataflow(
+    input x,
+    input y,
+    input z,
+    output s,
+    output c
+);
+    assign s = x ^ y ^ z;
+    assign c = (x & y) | (y & z) | (z & x);
+endmodule
+
+
+
+
 //testbench
 module fulladdeer_tb(
     );
