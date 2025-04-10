@@ -1,0 +1,45 @@
+module demux_behavioral(
+    input i,
+    input [1:0] s,
+    output reg [3:0] y
+);
+    always @(s or i) begin
+        y = 4'b0000;
+        case (s)
+            2'b00: y[0] = i;
+            2'b01: y[1] = i;
+            2'b10: y[2] = i;
+            2'b11: y[3] = i;
+            default: y = 4'bxxxx;
+        endcase
+    end
+endmodule
+
+
+module demux_dataflow(
+    input i,
+    input [1:0] s,
+    output [3:0] y
+);
+    assign y[0] = (s == 2'b00) ? i : 1'b0;
+    assign y[1] = (s == 2'b01) ? i : 1'b0;
+    assign y[2] = (s == 2'b10) ? i : 1'b0;
+    assign y[3] = (s == 2'b11) ? i : 1'b0;
+endmodule
+
+
+module demux_structural(
+    input i,
+    input [1:0] s,
+    output [3:0] y
+);
+    wire s0_n, s1_n;
+
+    not (s0_n, s[0]);
+    not (s1_n, s[1]);
+
+    and (y[0], i, s0_n, s1_n); // 00
+    and (y[1], i, s[0],  s1_n); // 01
+    and (y[2], i, s0_n, s[1]);  // 10
+    and (y[3], i, s[0],  s[1]); // 11
+endmodule
