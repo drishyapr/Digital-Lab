@@ -1,0 +1,49 @@
+module mux_behavioral(
+    input [3:0] d,
+    input [1:0] s,
+    output reg y
+);
+    always @(s or d) begin
+        case(s)
+            2'b00: y = d[0];
+            2'b01: y = d[1];
+            2'b10: y = d[2];
+            2'b11: y = d[3];
+        endcase
+    end
+endmodule
+
+
+module mux_dataflow(
+    input [3:0] d,
+    input [1:0] s,
+    output y
+);
+    assign y = (s == 2'b00) ? d[0] :
+               (s == 2'b01) ? d[1] :
+               (s == 2'b10) ? d[2] :
+                              d[3];
+endmodule
+
+
+module mux_structural(
+    input [3:0] d,
+    input [1:0] s,
+    output y
+);
+    wire s0_n, s1_n;
+    wire and0, and1, and2, and3;
+
+    // Invert select lines
+    not (s0_n, s[0]);
+    not (s1_n, s[1]);
+
+    // AND gates for each input line
+    and (and0, d[0], s0_n, s1_n); // select 00
+    and (and1, d[1], s[0],  s1_n); // select 01
+    and (and2, d[2], s0_n, s[1]);  // select 10
+    and (and3, d[3], s[0],  s[1]); // select 11
+
+    // OR gate to combine all selected outputs
+    or (y, and0, and1, and2, and3);
+endmodule
