@@ -1,0 +1,52 @@
+//Behavioural HalfAdder
+module halfadder(
+    input a,
+    input b,
+    output s,
+    output c
+    );
+    reg s,c;
+    always @(a or b)
+    begin
+    {c,s}=a+b;
+    end
+endmodule
+
+//Dataflow HalfAdder
+module halfadder(
+    input a,
+    input b,
+    output s,
+    output c
+    );
+    assign s=a^b;
+    assign c=a&b;
+endmodule
+
+//Structural HalfAdder
+module halfadder(
+    input a,
+    input b,
+    output s,
+    output c
+    );
+    xor x1(s,a,b);
+    and a1(c,a,b);
+endmodule
+
+//Testbench HalfAdder
+module halfadder_tb(
+    );
+    reg a,b;
+    wire s,c;
+    halfadder h1(a,b,s,c);
+    initial
+    begin
+    a=1'b0;
+    b=1'b0;
+    #10 a=1'b0;b=1'b1;
+    #10 a=1'b1;b=1'b0;
+    #10 a=1'b1;b=1'b1;
+    #10$finish;
+    end
+endmodule
