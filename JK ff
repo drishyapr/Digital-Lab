@@ -23,6 +23,33 @@ endmodule
 
 
 
+// Structural
+module jk_structural (
+    input j,
+    input k,
+    input clk,
+    input clr,
+    output q
+);
+    wire d, nq;
+
+    // Invert output
+    not (nq, q);
+
+    // D = J * ~Q + ~K * Q
+    wire t1, t2;
+    and (t1, j, nq);
+    not (nk, k);
+    and (t2, nk, q);
+    or  (d, t1, t2);
+
+    // D Flip-Flop instantiation
+    dff d1 (.d(d), .clk(clk), .clr(clr), .q(q));
+
+endmodule
+
+
+
 
 // Dataflow of JK
 module dff (
