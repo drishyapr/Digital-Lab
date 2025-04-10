@@ -47,3 +47,21 @@ module mux_structural(
     // OR gate to combine all selected outputs
     or (y, and0, and1, and2, and3);
 endmodule
+
+module mux_tb(
+
+);
+
+   reg [3:0] d;
+   reg [1:0] s;
+   wire y;
+   mux4to1 m1(d,s,y);
+   initial
+   begin
+   s=2'b00;d=4'b0000;
+   #10 s=2'b01;d=4'b0001;
+   #10 s=2'b10;d=4'b0010;
+   #10 s=2'b11;d=4'b0101;
+   #10 $finish;
+   end
+endmodule
