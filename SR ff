@@ -1,0 +1,83 @@
+module srflipflop(
+
+input S,
+
+input R,
+
+input clr,
+
+input clk,
+
+output reg Q
+
+);
+
+always @(posedge clk or clr)
+
+begin
+
+if(!clr)
+
+Q=1'b0;
+
+else
+
+begin
+
+case({S,R})
+
+2'b00:Q=Q;
+
+2'b01:Q=0;
+
+2'b10:Q=1;
+
+2'b11:Q=1'bX;
+
+endcase
+
+end
+
+end
+
+endmodule
+
+
+
+
+
+module srflipflop_tb(
+
+);
+
+reg S,R,clk,clr;
+
+wire Q;
+
+srflipflop s1(S,R,clr,clk,Q);
+
+initial
+
+begin
+
+clr=1'b0;
+
+#10 clr=1'b1;
+
+clk=0;
+
+#10 S=1'b0;R=1'b0;
+
+#10 S=1'b0;R=1'b1;
+
+#10 S=1'b1;R=1'b0;
+
+#10 S=1'b1;R=1'b1;
+
+#10 $finish;
+
+end
+
+always #5 clk=~clk;
+
+endmodule
