@@ -1,0 +1,125 @@
+module upcount_dataflow(
+    input mode,
+    input clk,
+    input clr,
+    output [2:0] Q
+);
+    reg [2:0] temp;
+
+    assign Q = temp;
+
+    always @(posedge clk or negedge clr) begin
+        if (!clr)
+            temp = 3'b000;
+        else
+            temp = mode ? (temp - 1) : (temp + 1);
+    end
+endmodule
+
+
+
+module upcount_behavioral(
+    input mode,
+    input clk,
+    input clr,
+    output reg [2:0] Q
+);
+
+    always @(posedge clk or negedge clr) begin
+        if (!clr)
+            Q <= 3'b000;
+        else if (mode == 1'b0)
+            Q <= Q + 1;
+        else
+            Q <= Q - 1;
+    end
+endmodule
+
+
+
+
+module dff(
+    input d,
+    input clk,
+    input clr,
+    output reg q
+);
+    always @(posedge clk or negedge clr) begin
+        if (!clr)
+            q <= 0;
+        else
+            q <= d;
+    end
+endmodule
+
+module upcount_structural(
+    input mode,
+    input clk,
+    input clr,
+    output [2:0] Q
+);
+    wire [2:0] next;
+
+    // Logic to determine next value based on mode
+    assign next = mode ? (Q - 1) : (Q + 1);
+
+    // Instantiate 3 D Flip-Flops for 3-bit register
+    dff d0(next[0], clk, clr, Q[0]);
+    dff d1(next[1], clk, clr, Q[1]);
+    dff d2(next[2], clk, clr, Q[2]);
+endmodule
+
+
+
+
+
+
+module upcount_tb;
+    reg clk;
+    reg clr;
+    reg mode;
+    wire [2:0] Q_dataflow, Q_behavioral, Q_structural;
+
+    // Instantiate all three counter types
+    upcount_dataflow u1 (.mode(mode), .clk(clk), .clr(clr), .Q(Q_dataflow));
+    upcount_behavioral u2 (.mode(mode), .clk(clk), .clr(clr), .Q(Q_behavioral));
+    upcount_structural u3 (.mode(mode), .clk(clk), .clr(clr), .Q(Q_structural));
+
+    // Clock generation
+    initial begin
+        clk = 0;
+        forever #5 clk = ~clk; // 10ns clock period
+    end
+
+    // Stimulus
+    initial begin
+        $display("Time\tclr\tmode\tDataflow\tBehavioral\tStructural");
+        $monitor("%0t\t%b\t%b\t%3b\t\t%3b\t\t%3b", 
+                  $time, clr, mode, Q_dataflow, Q_behavioral, Q_structural);
+
+        // Initialize
+        clr = 0;
+        mode = 0;
+        #12;
+        clr = 1;
+
+        // Count up
+        mode = 0;
+        #60;
+
+        // Count down
+        mode = 1;
+        #60;
+
+        // Clear again
+        clr = 0;
+        #10;
+        clr = 1;
+
+        // Count up again
+        mode = 0;
+        #30;
+
+        $finish;
+    end
+endmodule
